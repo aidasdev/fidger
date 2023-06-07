@@ -4,6 +4,7 @@
 
 [EAS Schema](https://sepolia.easscan.org/schema/view/0xf87be5220249510779b483cb81a829727f139123d82357e503de034a451c3298)
 
+
 Problem:
 
 It’s currently hard to onboard new users to Web3 directly. 
@@ -18,23 +19,22 @@ They need to:
 
 
 
+
 Solution:
 
 We provide physical wallets as a tool and service for Web3 projects.
 
+1) Business orders branded physical wallets
 
+2) The business installs our npm package
 
-Business orders branded physical wallets and preloads them with tokens/NFTs/native token
+3) Business attests on EAS cards as valid ones by preloading them with desired assets.
 
-The business installs our npm package
+4) We send out wallets to the end-users or businesses
 
-Business attests on EAS cards as valid ones by preloading them with desired assets.
+5) End-user scans code, visits the business website, and can interact with Web3 products instantly
 
-We send out wallets to the end-users or businesses
-
-End-user scans code, visits the business website, and can interact with Web3 products instantly
-
-End-user is attested as a valid receiver of the card
+6) End-user is attested as a valid receiver of the card
 
 
 
