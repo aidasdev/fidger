@@ -11,7 +11,7 @@ const Home = () => {
       <Box textAlign="center" py={24}>
         <Heading size="3xl">Fidger</Heading>
         <Heading mt={6} color="purple.600">
-          Connecting to wallet made easy
+          Helping Web3 projects to react crypto newcomers
         </Heading>
         <Button onClick={onWalletOpen} mt={6}>
           Try it!
