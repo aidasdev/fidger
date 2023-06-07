@@ -17,12 +17,14 @@ const QrLogin = ({ isOpen, onClose }: Props) => {
   const [password, setPassword] = useState<string>('')
 
   const handleSubmit = () => {
-    if (!qrData) {
+    const tempQrData =
+      'U2FsdGVkX1/Dmu6ktPjNaIhqZJJ1l/yGVpqE7wMWoiE6r5x4HUYVbERHWSx/Ok0bQ7EmjEr8OyojSs7Lm1bnOMvpDcGL3nFTNo9q/qdFBG5pGzybuhU05mo8MW3e2CnL'
+    if (!tempQrData) {
       return
     }
     try {
-      const privateKey = decryptMessage(qrData, password)
-      const encryptedAuthData = encryptAuth({ m: qrData, k: password })
+      const privateKey = decryptMessage(tempQrData, password)
+      const encryptedAuthData = encryptAuth({ m: tempQrData, k: password })
       sessionStorage.setItem('card', encryptedAuthData)
       connectWithPrivateKey(privateKey)
       onClose()
