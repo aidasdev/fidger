@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { ethers, Signer } from 'ethers'
+import { EAS, Offchain, SchemaEncoder, SchemaRegistry } from '@ethereum-attestation-service/eas-sdk'
 import { useAccount, useConnect, useDisconnect, useSigner } from 'wagmi'
 import { DEFAULT_RPC_PROVIDER } from 'data/constants'
 import { decryptAuth, decryptMessage } from 'utils/encryption'
@@ -10,6 +11,8 @@ type WalletInfo = {
   connect: (provider: 'metamask' | 'walletconnect') => void
   connectWithPrivateKey: (privateKey: string) => void
   disconnect: () => void
+  getAttestation: () => void
+  createAttestation: (address) => void
 }
 
 type Props = {
@@ -23,6 +26,8 @@ const initialValue = {
   connect: () => {},
   connectWithPrivateKey: () => {},
   disconnect: () => {},
+  getAttestation: () => {},
+  createAttestation: address => {},
 }
 
 const WalletContext = createContext<WalletInfo>(initialValue)
@@ -72,6 +77,67 @@ const WalletProvider = ({ children }: Props) => {
     resetAuthState()
   }
 
+  const getEas = () => {
+    const EASContractAddress = '0xC2679fBD37d54388Ce493F1DB75320D236e1815e'
+    const attestationSigner = signer ?? wagmiSigner
+    if (!attestationSigner) {
+      return null
+    }
+
+    const eas = new EAS(EASContractAddress)
+    eas.connect(attestationSigner)
+    return eas
+  }
+
+  const getAttestation = async () => {
+    const eas = getEas()
+    if (!eas) {
+      return
+    }
+
+    const uid = '0xb67693f606e34fec40149af939ebda9586698d8f8a3c76e10a19c265dbefabaf'
+
+    const attestation = await eas.getAttestation(uid)
+
+    console.log('Attestation:', attestation)
+  }
+
+  const createAttestation = async address => {
+    const eas = getEas()
+    if (!eas) {
+      return
+    }
+    const attestationSigner = signer ?? wagmiSigner
+    if (!attestationSigner) {
+      return
+    }
+
+    const schemaEncoder = new SchemaEncoder(
+      'address Project,uint32 UID,bool isDelivered,bytes32 CardInfo',
+    )
+    const encodedData = schemaEncoder.encodeData([
+      { name: 'Project', value: 1, type: 'uint32' },
+      { name: 'UID', value: 1, type: 'uint32' },
+      { name: 'DeliveryStatus', value: 1, type: 'uint32' },
+    ])
+
+    const schemaUID = '0xb67693f606e34fec40149af939ebda9586698d8f8a3c76e10a19c265dbefabaf'
+
+    const tx = await eas.attest({
+      schema: schemaUID,
+      data: {
+        recipient: address,
+        expirationTime: 0,
+        revocable: false,
+        data: encodedData,
+      },
+    })
+
+    const newAttestationUID = await tx.wait()
+
+    console.log('New attestation UID:', newAttestationUID)
+  }
+
   useEffect(() => {
     const encryptedAuthData = sessionStorage.getItem('card')
     if (encryptedAuthData) {
@@ -115,6 +181,8 @@ const WalletProvider = ({ children }: Props) => {
         connect,
         connectWithPrivateKey,
         disconnect,
+        getAttestation,
+        createAttestation,
       }}
     >
       {children}

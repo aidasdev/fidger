@@ -3,14 +3,22 @@ import { Box, Flex, Heading, Input } from '@chakra-ui/react'
 import { Button } from 'components'
 import QRCode from 'react-qr-code'
 import { generateWallet } from 'utils/wallet'
+import { useWallet } from 'providers/WalletProvider'
 
 const Generator = () => {
+  const { getAttestation, createAttestation } = useWallet()
   const [password, setPassword] = useState('')
   const [address, setAddress] = useState<string | null>(null)
   const [encryptedPrivateKey, setEncryptedPrivateKey] = useState<string | null>(null)
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { encryptedPrivateKey: encryptedKey, address: walletAddress } = generateWallet(password)
+    try {
+      await getAttestation()
+      await createAttestation(walletAddress)
+    } catch {
+      console.error('Failed to create attestation')
+    }
     setAddress(walletAddress)
     setEncryptedPrivateKey(encryptedKey)
   }
