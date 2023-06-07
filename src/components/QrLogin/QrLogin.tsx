@@ -27,7 +27,6 @@ const QrLogin = ({ isOpen, onClose }: Props) => {
       connectWithPrivateKey(privateKey)
       onClose()
     } catch (e) {
-      console.error(e)
       toast({ title: 'Wrong password', status: 'error' })
     }
   }
