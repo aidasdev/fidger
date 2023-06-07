@@ -26,7 +26,8 @@ const QrLogin = ({ isOpen, onClose }: Props) => {
       sessionStorage.setItem('card', encryptedAuthData)
       connectWithPrivateKey(privateKey)
       onClose()
-    } catch {
+    } catch (e) {
+      console.error(e)
       toast({ title: 'Wrong password', status: 'error' })
     }
   }
