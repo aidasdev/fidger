@@ -60,7 +60,7 @@ MVP Overview:
 
 1. Solution to implement our wallet into your Web3 project
 
-2. Tool to generate QR code which has 
+2. Tool to generate QR code which has encrypted private key
 
 3. After scanning the QR code modal to enter the PIN code which decrypts hashed private key in the QR code
 
